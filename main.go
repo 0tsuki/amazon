@@ -23,7 +23,7 @@ func AmazonScrape(asin string) {
 	pp.Print(p.Review)
 }
 
-func main() {
+func ItemLookup() {
 	var asin = flag.String("asin", "", "ID of an amazon product to find")
 	var group = flag.String("resg", "ItemAttributes,Offers,SalesRank,BrowseNodes", "Response group, comma separeted")
 	flag.Parse()
@@ -41,4 +41,9 @@ func main() {
 		log.Fatal(err)
 	}
 	pp.Println(resp)
+}
+
+func main() {
+	asins := jp.GetBestsellers("electronics")
+	fmt.Printf("%v\n", asins)
 }
