@@ -4,8 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
+	"strings"
 
 	"github.com/0tsuki/amazon/jp"
+	"github.com/0tsuki/amazonpa"
 	"github.com/k0kubun/pp"
 )
 
@@ -22,6 +25,20 @@ func AmazonScrape(asin string) {
 
 func main() {
 	var asin = flag.String("asin", "", "ID of an amazon product to find")
+	var group = flag.String("resg", "ItemAttributes,Offers,SalesRank,BrowseNodes", "Response group, comma separeted")
 	flag.Parse()
-	AmazonScrape(*asin)
+
+	c := amazonpa.Client{
+		AssociateTag: os.Getenv("AMAZONPA_ASSOCIATE_TAG"),
+		AccessKeyId:  os.Getenv("AMAZONPA_ACCESS_KEY_ID"),
+		SecretKey:    os.Getenv("AMAZONPA_SECRET_KEY"),
+		Host:         os.Getenv("AMAZONPA_HOST"),
+	}
+
+	g := strings.Split(*group, ",")
+	resp, err := c.ItemLookup(*asin, "ASIN", g)
+	if err != nil {
+		log.Fatal(err)
+	}
+	pp.Println(resp)
 }
